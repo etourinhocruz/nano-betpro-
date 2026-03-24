@@ -11,7 +11,7 @@ st.markdown("---")
 
 # --- SUAS CHAVES INTEGRADAS ---
 OPENAI_KEY = "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"
-GEMINI_KEY = "gen-lang-client-0429120146" 
+GEMINI_KEY = "AIzaSyBY_fbe0_xFpkNWz0YAYxxZFYzW3VZ6uzs" 
 
 # --- INICIALIZAÇÃO ---
 genai.configure(api_key=GEMINI_KEY)
