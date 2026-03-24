@@ -50,7 +50,7 @@ if st.button("🚀 GERAR IMAGEM AGORA"):
         with st.spinner(f"O Diretor de Arte está criando a peça para {expert_sel}..."):
             try:
                 # FASE 1: O Gemini (Estrategista) cria o prompt ultra-detalhado
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                model = genai.GenerativeModel('models/gemini-1.5-flash')
                 prompt_task = f"""
                 Create a high-quality professional betting card image prompt for DALL-E 3.
                 EXPERT: {expert_sel}
