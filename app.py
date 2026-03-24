@@ -4,55 +4,72 @@ from openai import OpenAI
 import requests
 from io import BytesIO
 
-# Configuração da Interface
-st.set_page_config(page_title="Nano Bet Design - Arte Final", page_icon="🎨", layout="wide")
-st.title("🎨 Nano Bet Design - Gerador de Arte Final")
+# Configuração da Interface (Visual de Elite)
+st.set_page_config(page_title="Nano Bet Pro - Arte Final", page_icon="🎨", layout="wide")
+st.title("🎨 Nano Bet Pro - Gerador de Arte Final")
+st.subheader("Criação de Cards de Alta Conversão")
 st.markdown("---")
 
 # --- SUAS CHAVES INTEGRADAS ---
+GEMINI_KEY = "AIzaSyBY_fbe0_xFpkNWz0YAYxxZFYzW3VZ6uzs"
 OPENAI_KEY = "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"
-GEMINI_KEY = "AIzaSyBY_fbe0_xFpkNWz0YAYxxZFYzW3VZ6uzs" 
 
-# --- INICIALIZAÇÃO ---
+# Inicializar os Motores
 genai.configure(api_key=GEMINI_KEY)
 openai_client = OpenAI(api_key=OPENAI_KEY)
 
-# --- BANCO DE DADOS DE BRANDING ---
+# --- BANCO DE DADOS DE BRANDING (12 EXPERTS) ---
 EXPERTS = {
-    "Herculano": {"cor": "#df3891"},
-    "Camillo": {"cor": "#00ff30"},
-    "Bruno Karttos": {"cor": "#f9b61d"},
-    "Luisa Mendes": {"cor": "#8400ff"},
-    "Raquel Maia": {"cor": "#22447f"},
-    "Neto Lima": {"cor": "#64e6f9"},
-    "Nascimento": {"cor": "#37c200"},
-    "Nalanda Tips": {"cor": "#cd00ff"},
-    "MD": {"cor": "#5acd51"},
-    "Luiz Royal": {"cor": "#00fffc"},
-    "Danda": {"cor": "#00ff06"},
-    "Helder da Bet": {"cor": "#00ff1e"}
+    "Herculano": {"cor": "#df3891", "estilo": "Rosa Barbie e Verde Neon"},
+    "Camillo": {"cor": "#00ff30", "estilo": "Verde Intenso e Escuro"},
+    "Bruno Karttos": {"cor": "#f9b61d", "estilo": "Amarelo e Dourado Premium"},
+    "Luisa Mendes": {"cor": "#8400ff", "estilo": "Roxo Vibrante"},
+    "Raquel Maia": {"cor": "#22447f", "estilo": "Azul e Verde Lima"},
+    "Neto Lima": {"cor": "#64e6f9", "estilo": "Ciano Tech"},
+    "Nascimento": {"cor": "#37c200", "estilo": "Verde Clássico Bet"},
+    "Nalanda Tips": {"cor": "#cd00ff", "estilo": "Roxo e Magenta"},
+    "MD": {"cor": "#5acd51", "estilo": "Verde Esportivo"},
+    "Luiz Royal": {"cor": "#00fffc", "estilo": "Ciano Royal"},
+    "Danda": {"cor": "#00ff06", "estilo": "Verde Limão Agressivo"},
+    "Helder da Bet": {"cor": "#00ff1e", "estilo": "Verde Neon Puro"}
 }
 
-# --- INTERFACE ---
-st.sidebar.header("Configurações do Card")
-expert_sel = st.sidebar.selectbox("Expert", list(EXPERTS.keys()))
-formato = st.sidebar.selectbox("Formato", ["9:16 Status (WhatsApp)", "1:1 Feed"])
-tipo_card = st.sidebar.selectbox("Tipo de Card", ["Resultado", "Odd Alta", "Oferta", "Feedback"])
+# --- BARRA LATERAL DE CONFIGURAÇÃO ---
+st.sidebar.header("⚙️ Configurações do Card")
+expert_sel = st.sidebar.selectbox("Escolha o Expert", list(EXPERTS.keys()))
+formato = st.sidebar.selectbox("Formato do WhatsApp", ["9:16 Status", "1:1 Feed"])
+tipo_card = st.sidebar.selectbox("Tipo de Card", ["Resultado/Green", "Odd Alta", "Oferta Especial", "Feedback"])
 
-briefing = st.text_area("Dados do Card (Ex: Odd 5.0, Mês Março, Green)", height=100)
+# Entrada do Briefing
+briefing = st.text_area("✍️ Dados do Card (Ex: ODD 4.5, Lucro R$ 500, Março)", height=100)
 
-if st.button("🚀 GERAR ARTE FINAL"):
+if st.button("🚀 GERAR IMAGEM AGORA"):
     if not briefing:
-        st.error("Digite os dados primeiro!")
+        st.error("Por favor, digite os dados do card antes de gerar.")
     else:
-        with st.spinner(f"Gerando arte final para {expert_sel}..."):
+        with st.spinner(f"O Diretor de Arte está criando a peça para {expert_sel}..."):
             try:
-                # O Gemini cria o prompt visual baseado nas regras
+                # FASE 1: O Gemini (Estrategista) cria o prompt ultra-detalhado
                 model = genai.GenerativeModel('gemini-1.5-flash')
-                prompt_task = f"Create a professional high-conversion betting card image prompt for DALL-E 3. Expert: {expert_sel}. Main Color: {EXPERTS[expert_sel]['cor']}. Format: {formato}. Data: {briefing}. Style: Dark background, premium neon lights, 3D typography, 15% safe zone margins on top and bottom. High contrast."
+                prompt_task = f"""
+                Create a high-quality professional betting card image prompt for DALL-E 3.
+                EXPERT: {expert_sel}
+                MAIN COLOR: {EXPERTS[expert_sel]['cor']} ({EXPERTS[expert_sel]['estilo']})
+                FORMAT: {formato}
+                DATA: {briefing}
+                TYPE: {tipo_card}
+                
+                VISUAL RULES:
+                - Dark, premium background with smoke and glowing particles.
+                - Bold, 3D white typography with heavy black outlines.
+                - Centralize the main numbers (ODD/Profit).
+                - SAFE ZONE: Keep 15% margin at the top and bottom.
+                - High contrast, HDR lighting, realistic textures.
+                - Professional betting aesthetic.
+                """
                 gemini_res = model.generate_content(prompt_task)
                 
-                # O DALL-E 3 gera a imagem final
+                # FASE 2: O DALL-E 3 (Ilustrador) gera a imagem final
                 size = "1024x1792" if "9:16" in formato else "1024x1024"
                 res_img = openai_client.images.generate(
                     model="dall-e-3",
@@ -63,11 +80,12 @@ if st.button("🚀 GERAR ARTE FINAL"):
                 )
                 
                 img_url = res_img.data[0].url
-                st.image(img_url, caption=f"Arte de {expert_sel} pronta!")
                 
-                # Download
-                btn_data = requests.get(img_url).content
-                st.download_button("📥 Baixar Imagem", btn_data, f"{expert_sel}_card.png", "image/png")
+                # Exibição e Download
+                st.image(img_url, caption=f"Arte Final - Expert {expert_sel}")
                 
+                img_data = requests.get(img_url).content
+                st.download_button(label="📥 Baixar Arte em HD", data=BytesIO(img_data).read(), file_name=f"card_{expert_sel}.png", mime="image/png")
+
             except Exception as e:
-                st.error(f"Erro técnico: {e}. Verifique se a chave do Gemini começa com AIzaSy.")
+                st.error(f"Ocorreu um erro técnico: {e}")
